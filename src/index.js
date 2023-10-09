@@ -1,4 +1,5 @@
-import { legacy_createStore as createStore } from 'redux';
+import { createSlice } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 
 const add = document.getElementById('add');
 const minus = document.getElementById('minus');
@@ -6,28 +7,37 @@ const number = document.querySelector('span');
 
 number.innerText = 0;
 
-const countModifier = (count = 0, action) => {
-  console.log(action);
-  if (action.type === 'ADD') {
-    return (count += 1);
-  } else if (action.type === 'MINUS') {
-    return (count -= 1);
-  } else {
-    return count;
-  }
-};
-const countStore = createStore(countModifier);
+const countSlice = createSlice({
+  name: 'counter',
+  initialState: {
+    value: 0,
+  },
+  reducers: {
+    ADD: (count) => {
+      count.value += 1;
+    },
+    MINUS: (count) => {
+      count.value -= 1;
+    },
+  },
+});
+const countStore = configureStore({
+  reducer: countSlice.reducer,
+});
 
 const onChange = () => {
-  number.innerText = countStore.getState();
+  console.log(countStore.getState().value);
+  number.innerText = countStore.getState().value;
 };
 countStore.subscribe(onChange);
 
+const { ADD, MINUS } = countSlice.actions;
+
 const handleAdd = () => {
-  countStore.dispatch({ type: 'ADD' });
+  countStore.dispatch(ADD());
 };
 const handleMinus = () => {
-  countStore.dispatch({ type: 'MINUS' });
+  countStore.dispatch(MINUS());
 };
 add.addEventListener('click', handleAdd);
 minus.addEventListener('click', handleMinus);
