@@ -1,43 +1,22 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { configureStore } from '@reduxjs/toolkit';
+// import { createSlice } from '@reduxjs/toolkit';
+// import { configureStore } from '@reduxjs/toolkit';
+// import { legacy_createStore as createStore } from '@reduxjs/toolkit';
 
-const add = document.getElementById('add');
-const minus = document.getElementById('minus');
-const number = document.querySelector('span');
+const form = document.querySelector('form');
+const input = document.querySelector('input');
+const ul = document.querySelector('ul');
 
-number.innerText = 0;
-
-const countSlice = createSlice({
-  name: 'counter',
-  initialState: {
-    value: 0,
-  },
-  reducers: {
-    ADD: (count) => {
-      count.value += 1;
-    },
-    MINUS: (count) => {
-      count.value -= 1;
-    },
-  },
-});
-const countStore = configureStore({
-  reducer: countSlice.reducer,
-});
-
-const onChange = () => {
-  console.log(countStore.getState().value);
-  number.innerText = countStore.getState().value;
+const createTodo = (toDo) => {
+  const li = document.createElement('li');
+  li.innerText = toDo;
+  ul.appendChild(li);
 };
-countStore.subscribe(onChange);
 
-const { ADD, MINUS } = countSlice.actions;
+const onSubmit = (e) => {
+  e.preventDefault();
+  const toDo = input.value;
+  input.value = '';
+  createTodo(toDo);
+};
 
-const handleAdd = () => {
-  countStore.dispatch(ADD());
-};
-const handleMinus = () => {
-  countStore.dispatch(MINUS());
-};
-add.addEventListener('click', handleAdd);
-minus.addEventListener('click', handleMinus);
+form.addEventListener('submit', onSubmit);
