@@ -1,43 +1,39 @@
-// import { createSlice } from '@reduxjs/toolkit';
-// import { configureStore } from '@reduxjs/toolkit';
-import { legacy_createStore as createStore } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
+// import { legacy_createStore as createStore } from '@reduxjs/toolkit';
 
 const form = document.querySelector('form');
 const input = document.querySelector('input');
 const ul = document.querySelector('ul');
 
-const ADD_TODO = 'ADD_TODO';
-const addToDoAction = (text) => {
-  return { type: ADD_TODO, text: text };
-};
-const DELETE_TODO = 'DELETE_TODO';
-const deleteToDoAction = (id) => {
-  return { type: DELETE_TODO, id: +id };
-};
-
-const reducer = (state = [], action) => {
-  console.log(action);
-  switch (action.type) {
-    case ADD_TODO:
-      return [{ text: action.text, id: Date.now() }, ...state];
-    case DELETE_TODO:
-      return state.filter((toDo) => toDo.id !== action.id);
-    default:
-      return state;
-  }
-};
-const store = createStore(reducer);
+const toDoSlice = createSlice({
+  name: 'ToDos',
+  initialState: [],
+  reducers: {
+    ADD_TODO: (state, action) => {
+      return [{ text: action.payload, id: Date.now() }, ...state];
+    },
+    DELETE_TODO: (state, action) => {
+      const id = +action.payload;
+      return state.filter((toDo) => toDo.id !== id);
+    },
+  },
+});
+const { ADD_TODO, DELETE_TODO } = toDoSlice.actions;
+const store = configureStore({
+  reducer: toDoSlice.reducer,
+});
 
 const dispatchAddToDo = (text) => {
-  store.dispatch(addToDoAction(text));
+  store.dispatch(ADD_TODO(text));
 };
 
 const dispatchDeleteToDo = (e) => {
   const li = e.target.parentNode;
-  store.dispatch(deleteToDoAction(li.id));
+  store.dispatch(DELETE_TODO(li.id));
 };
 
-store.subscribe(() => {
+const paintToDo = () => {
   const toDos = store.getState();
   ul.innerText = '';
   toDos.forEach((toDo) => {
@@ -52,7 +48,9 @@ store.subscribe(() => {
     li.appendChild(btn);
     ul.appendChild(li);
   });
-});
+};
+
+store.subscribe(paintToDo);
 
 const onSubmit = (e) => {
   e.preventDefault();
