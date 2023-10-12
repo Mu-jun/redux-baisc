@@ -3,13 +3,13 @@ import { legacy_createStore as createStore } from 'redux';
 const ADD = 'ADD';
 const DELETE = 'DELETE';
 
-export const addToDo = (text) => {
+export const addToDoAction = (text) => {
   return {
     type: ADD,
     text,
   };
 };
-export const deleteToDo = (id) => {
+export const deleteToDoAction = (id) => {
   return {
     type: DELETE,
     id,
