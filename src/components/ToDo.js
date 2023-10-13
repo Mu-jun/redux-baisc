@@ -1,17 +1,17 @@
 import { connect } from 'react-redux';
 import { deleteToDoAction } from '../store';
+import { Link } from 'react-router-dom';
 
-function Todo({ text, deleteToDo }) {
+function Todo({ text, id, deleteToDo }) {
   return (
     <li>
-      {text}
+      <Link to={`/${id}`}>{text}</Link>
       <button onClick={deleteToDo}>DEL</button>
     </li>
   );
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-  console.log(ownProps)
   return {
     deleteToDo: () => dispatch(deleteToDoAction(ownProps.id)),
   };
